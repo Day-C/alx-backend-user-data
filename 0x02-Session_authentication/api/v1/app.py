@@ -31,28 +31,32 @@ if auth:
 
         auth = Auth()
 
+
 @app.before_request
 def do_first():
     """function to run before any request."""
 
     if auth:
-        ex_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/', '/api/v1/auth_session/login/']
-       # print(auth.require_auth(request.path, ex_paths))
+        ex_paths = ['/api/v1/status/', '/api/v1/unauthorized/']
+        ex_paths.append('/api/v1/forbidden/')
+        ex_paths.append('/api/v1/auth_session/login/')
+        # print(auth.require_auth(request.path, ex_paths))
+
         if auth.require_auth(request.path, ex_paths) is False:
             pass
         else:
             auth_header = auth.authorization_header(request)
             session_cookie = auth.session_cookie(request)
+
             if auth_header is None and session_cookie is None:
                 abort(401)
-            if auth.authorization_header(request):
-                abort (401)
+            if auth.authorization_header(request) is None:
+                abort(401)
             # check current users credentialas
             if auth.current_user(request) is None:
                 abort(403)
-            else:
-                # assign the results of 'auth.current_user(request)' to request
-                request.current_user = auth.current_user(request)
+            request.current_user = auth.current_user(request)
+
 
 @app.errorhandler(404)
 def not_found(error) -> str:
@@ -61,11 +65,13 @@ def not_found(error) -> str:
 
     return jsonify({"error": "Not found"}), 404
 
+
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """Unauthorized handler."""
 
     return jsonify({"error": "Unauthorized"}), 401
+
 
 @app.errorhandler(403)
 def not_allowed(error) -> str:
