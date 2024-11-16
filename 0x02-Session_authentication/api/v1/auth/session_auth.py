@@ -41,7 +41,7 @@ class SessionAuth(Auth):
         user = User.get(usr_id)
         return user
 
-    def destroy_session(self, request= None) -> bool:
+    def destroy_session(self, request=None) -> bool:
         """DELETEs an existing session."""
 
         if request is None:
@@ -52,5 +52,5 @@ class SessionAuth(Auth):
         user_id = self.session_cookie(request)
         if user_id is None:
             return False
-        del self.user_id_by_session_id[sess_id] 
+        del self.user_id_by_session_id[sess_id]
         return True
