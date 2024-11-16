@@ -27,13 +27,16 @@ if auth:
 
         auth = Auth()
 
+
 @app.before_request
 def do_first():
     """function to run before any request."""
 
     if auth:
-        ex_paths = ['/api/v1/status/', '/api/v1/unauthorized/', '/api/v1/forbidden/']
-       # print(auth.require_auth(request.path, ex_paths))
+        ex_paths = ['/api/v1/status/', '/api/v1/unauthorized/']
+        ex_paths.append('/api/v1/forbidden/')
+
+        # print(auth.require_auth(request.path, ex_paths))
         if auth.require_auth(request.path, ex_paths) is False:
             pass
         else:
@@ -42,6 +45,7 @@ def do_first():
             if auth.current_user(request) is None:
                 abort(403)
 
+
 @app.errorhandler(404)
 def not_found(error) -> str:
     """ Not found handler
@@ -49,11 +53,13 @@ def not_found(error) -> str:
 
     return jsonify({"error": "Not found"}), 404
 
+
 @app.errorhandler(401)
 def unauthorized(error) -> str:
     """Unauthorized handler."""
 
     return jsonify({"error": "Unauthorized"}), 401
+
 
 @app.errorhandler(403)
 def not_allowed(error) -> str:
