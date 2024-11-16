@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """manage the Api authentication."""
+from os import getenv
 from flask import request
 from typing import List, TypeVar
 
@@ -38,7 +39,6 @@ class Auth:
                 return None
         return None
 
-
     def current_user(self, request=None) -> TypeVar('User'):
         """returns None."""
 
@@ -47,9 +47,9 @@ class Auth:
     def session_cookie(self, request=None):
         """create adn returns a cookie value for a request."""
 
-
         if request is None:
             return None
         # use envirunment variable to define name of cookie on terminal
-        cookie = request.cookies.get('_my_session_id', None)
+        sess_name = getenv("SESSION_NAME")
+        cookie = request.cookies.get(sess_name, None)
         return cookie
