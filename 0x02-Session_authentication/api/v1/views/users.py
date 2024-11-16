@@ -5,6 +5,7 @@ from api.v1.views import app_views
 from flask import abort, jsonify, request
 from models.user import User
 
+
 @app_views.route('/users', methods=['GET'], strict_slashes=False)
 def view_all_users() -> str:
     """ GET /api/v1/users
@@ -126,6 +127,7 @@ def update_user(user_id: str = None) -> str:
         user.last_name = rj.get('last_name')
     user.save()
     return jsonify(user.to_json()), 200
+
 
 @app_views.route('/users/me', methods=['GET'], strict_slashes=False)
 def show_me():
