@@ -1,4 +1,4 @@
-#!/usr/bin/emv python3
+#!/usr/bin/env python3
 """ Module for authentication views
 """
 from api.v1.views import app_views
