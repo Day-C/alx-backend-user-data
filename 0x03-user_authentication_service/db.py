@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """DB module
 """
-import sqlalchemy
+import bcrypt
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -68,11 +68,7 @@ class DB:
                 if key not in user.__dict__:
                     raise ValueError
                 user.key = kwargs[key]
-
-    def _hash_password(pwd: str) -> bytes:
-        """gives a salted hash of input password."""
-
-        from auth import _hash_password
-        return _hash_password(pwd)
-
-
+            self._session.commit()
+        except (NoResultsFound, InvalidRequestError):
+            pass
+        return None
